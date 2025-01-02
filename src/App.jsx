@@ -3,6 +3,7 @@ import NewProject from "./components/NewProject";
 import NoProject from "./components/NoProject";
 import Sidebar from "./components/Sidebar";
 import Modal from "./components/Modal";
+import Project from "./components/Project";
 
 function App() {
   const [projectState, setProjectState] = useState({
@@ -15,6 +16,46 @@ function App() {
   const dueDateRef = useRef();
 
   const dialogRef = useRef();
+
+  const selectedProject = projectState.projects.find(
+    (project) => project.id === projectState.selectedProjectId
+  );
+
+  console.log(selectedProject);
+
+  function addTaskHandler(taskText) {
+    console.log(projectState);
+    const indexOfSelectedProject = projectState.projects.findIndex(
+      (project) => project.id === projectState.selectedProjectId
+    );
+    console.log(indexOfSelectedProject);
+
+    setProjectState((prevState) => {
+      const taskId = Math.random();
+      return {
+        ...prevState,
+        projects: [
+          // ...prevState.projects.filter(
+          //   (project) => project.id !== prevState.selectedProjectId
+          // ),
+          ...prevState.projects.splice(0, indexOfSelectedProject),
+          {
+            ...selectedProject,
+            tasks: [
+              ...prevState.projects[indexOfSelectedProject].tasks,
+              {
+                taskId,
+                taskText,
+              },
+            ],
+          },
+          ...prevState.projects.splice(indexOfSelectedProject),
+        ],
+      };
+    });
+  }
+
+  function deleteTaskHandler() {}
 
   function addProjectHandler() {
     setProjectState({ ...projectState, selectedProjectId: null });
@@ -47,13 +88,46 @@ function App() {
             title: enteredTitle,
             description: enteredDescription,
             dueDate: enteredDueDate,
+            tasks: [],
           },
         ],
       };
     });
   }
 
-  let content;
+  function handleCancel() {
+    setProjectState((prevState) => ({
+      ...prevState,
+      selectedProjectId: undefined,
+    }));
+  }
+
+  function handleProjectClick(selectedProjectId) {
+    setProjectState((prevState) => ({ ...prevState, selectedProjectId }));
+  }
+
+  function handleDelete() {
+    setProjectState((prevState) => ({
+      ...prevState,
+      selectedProjectId: undefined,
+      projects: prevState.projects.filter(
+        (project) => project.id !== prevState.selectedProjectId
+      ),
+    }));
+  }
+
+  let tasks = [];
+  if (selectedProject?.tasks?.length > 0) tasks = selectedProject.tasks;
+
+  let content = (
+    <Project
+      project={selectedProject}
+      handleDelete={handleDelete}
+      addTaskHandler={addTaskHandler}
+      deleteTaskHandler={deleteTaskHandler}
+      tasks={tasks}
+    />
+  );
 
   if (projectState.selectedProjectId === undefined) {
     content = <NoProject addProjectHandler={addProjectHandler} />;
@@ -61,14 +135,17 @@ function App() {
     content = (
       <>
         <Modal ref={dialogRef}>
-          <h1>Error</h1>
-          <p>please enter the values.</p>
+          <h2 className="text=xl font-bold text-stone-800 my-4">
+            Empty Input!
+          </h2>
+          <p className="text-stone-700 mb-4">please enter the values.</p>
         </Modal>
         <NewProject
           onSave={onSaveHandler}
           titleRef={titleRef}
           descriptionRef={descriptionRef}
           dueDateRef={dueDateRef}
+          handleCancel={handleCancel}
         />
       </>
     );
@@ -79,6 +156,8 @@ function App() {
       <Sidebar
         addProjectHandler={addProjectHandler}
         projects={projectState.projects}
+        handleProjectClick={handleProjectClick}
+        selectedProjectId={projectState.selectedProjectId}
       />
       {content}
     </main>

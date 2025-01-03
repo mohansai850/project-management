@@ -21,41 +21,42 @@ function App() {
     (project) => project.id === projectState.selectedProjectId
   );
 
-  console.log(selectedProject);
-
   function addTaskHandler(taskText) {
-    console.log(projectState);
-    const indexOfSelectedProject = projectState.projects.findIndex(
-      (project) => project.id === projectState.selectedProjectId
-    );
-    console.log(indexOfSelectedProject);
-
     setProjectState((prevState) => {
       const taskId = Math.random();
       return {
         ...prevState,
-        projects: [
-          // ...prevState.projects.filter(
-          //   (project) => project.id !== prevState.selectedProjectId
-          // ),
-          ...prevState.projects.splice(0, indexOfSelectedProject),
-          {
-            ...selectedProject,
-            tasks: [
-              ...prevState.projects[indexOfSelectedProject].tasks,
-              {
-                taskId,
-                taskText,
-              },
-            ],
-          },
-          ...prevState.projects.splice(indexOfSelectedProject),
-        ],
+        projects: prevState.projects.map((project, index) => {
+          if (project.id !== prevState.selectedProjectId) {
+            return project;
+          }
+          return {
+            ...project,
+            tasks: [...prevState.projects[index].tasks, { taskId, taskText }],
+          };
+        }),
       };
     });
   }
 
-  function deleteTaskHandler() {}
+  function deleteTaskHandler(toBeDeletedTaskId) {
+    setProjectState((prevState) => {
+      return {
+        ...prevState,
+        projects: prevState.projects.map((project) => {
+          if (project.id === prevState.selectedProjectId) {
+            return {
+              ...project,
+              tasks: project.tasks.filter(
+                (task) => task.taskId !== toBeDeletedTaskId
+              ),
+            };
+          }
+          return project;
+        }),
+      };
+    });
+  }
 
   function addProjectHandler() {
     setProjectState({ ...projectState, selectedProjectId: null });

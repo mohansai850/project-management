@@ -1,4 +1,4 @@
-import Tasks from "./Tasks";
+import Task from "./Task";
 
 export default function Project({
   project,
@@ -32,7 +32,7 @@ export default function Project({
           {project.description}
         </p>
       </header>
-      <Tasks
+      <Task
         addTaskHandler={addTaskHandler}
         deleteTaskHandler={deleteTaskHandler}
         tasks={tasks}

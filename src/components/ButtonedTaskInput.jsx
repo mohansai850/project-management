@@ -5,6 +5,15 @@ export default function ButtonedTaskInput({
   deleteTaskHandler,
 }) {
   const [enteredTask, setEnteredTask] = useState("");
+
+  function onAddTask() {
+    if (enteredTask.trim() === "") {
+      return;
+    }
+    addTaskHandler(enteredTask);
+    setEnteredTask("");
+  }
+
   return (
     <div className="flex items-center gap-4">
       <input
@@ -14,8 +23,8 @@ export default function ButtonedTaskInput({
         value={enteredTask}
       />
       <button
-        className="text-stone-700 hover:text-stone-900"
-        onClick={() => {}}
+        className="text-stone-700 hover:text-stone-950"
+        onClick={onAddTask}
       >
         Add Task
       </button>

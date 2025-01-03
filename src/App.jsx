@@ -135,7 +135,7 @@ function App() {
   } else if (projectState.selectedProjectId === null) {
     content = (
       <>
-        <Modal ref={dialogRef}>
+        <Modal ref={dialogRef} buttonText="OK!">
           <h2 className="text=xl font-bold text-stone-800 my-4">
             Empty Input!
           </h2>

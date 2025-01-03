@@ -2,7 +2,7 @@ import { useImperativeHandle, useRef } from "react";
 import { createPortal } from "react-dom";
 import Button from "./Button";
 
-export default function Modal({ children, ref }) {
+export default function Modal({ children, buttonText, ref }) {
   const dialogRef = useRef();
 
   useImperativeHandle(ref, () => {
@@ -20,7 +20,7 @@ export default function Modal({ children, ref }) {
     >
       {children}
       <form method="dialog" className="mt-4 text-right">
-        <Button>OK!</Button>
+        <Button>{buttonText}</Button>
       </form>
     </dialog>,
     document.getElementById("modal-root")

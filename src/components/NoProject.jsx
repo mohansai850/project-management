@@ -13,9 +13,9 @@ export default function NoProject({ addProjectHandler }) {
         No Project Selected
       </h2>
       <p className="text-stone-400 mb-4">
-        Please select a project or create a new one
+        Please select a project or create a new project
       </p>
-      <Button onClick={addProjectHandler}>Create a new project</Button>
+      <Button onClick={addProjectHandler}>Create new project</Button>
     </div>
   );
 }
